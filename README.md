@@ -1,23 +1,70 @@
 # EMI
-EMI is a featureful and accessible item and recipe viewer for Minecraft.
 
-> [!NOTE]
-> **This is [wdlpiaoyi](https://github.com/wdlpiaoyi)'s fork of [EMI](https://github.com/emilyploszaj/emi).**
-> Only **Minecraft 1.20.1** is maintained in this fork for now (本仓库目前只维护 Minecraft 1.20.1).
-> The `1.20.1` branch is the active branch; every other branch is an unmaintained copy from upstream.
+简体中文（默认） ｜ [English](README.en.md)
 
-![EMI Interface](https://user-images.githubusercontent.com/14813658/224562247-1588064e-39ef-475a-9108-d7a357af6939.png)
+> 给 Minecraft 1.20.1 的物品与配方查看器：搜物品、看配方，配方树能从成品一路点到原材料。
 
-![Recipe Tree](https://user-images.githubusercontent.com/14813658/224562258-1a5ee67a-fd7f-489f-9eed-ae67c184ddac.png)
+| 项目 | 内容 |
+|---|---|
+| 游戏版本 | 1.20.1 |
+| 加载器 | Fabric / Forge |
+| 模组 ID | `emi` |
+| 安装端 | 客户端（服务端装不装都行） |
+| 前置 | Fabric 端需 Fabric API；JEI 可选 |
+| 许可证 | MIT |
 
-## Branches
-| Branch | Status |
-| --- | --- |
-| `1.20.1` | **Maintained** — the only supported branch in this fork for now |
-| all others | Unmaintained; copied from [upstream EMI](https://github.com/emilyploszaj/emi) |
+本仓库是上游 [EMI](https://github.com/emilyploszaj/emi) 的 fork，托管在 [wdlpiaoyi/emi](https://github.com/wdlpiaoyi/emi)，由 wdlpiaoyi 与 deepseek 维护，只维护 **Minecraft 1.20.1**。展示名仍是 **EMI**，`modId`、包名与注册命名空间仍是 `emi` / `dev.emi`，按 modId 写死兼容的模组与资源包继续可用。
 
-## Developers
-To add EMI to your project as a dependency you need to add the following to your `build.gradle`:
+## 特性
+
+- **物品与配方查看器**：在列表里搜物品，点开就能看合成、熔炼等配方。
+- **配方树**：从成品一层层展开到原材料，点树上的节点可以继续往下查。
+- **搜索**：按名称搜；`@模组id` 只看某个模组，`#标签` 按标签过滤，提示文本（tooltip）也能搜。
+- **查看全部配方**：键位可配置，鼠标放到物品上按一下，列出它作为产物的全部配方。
+- **JEMI 兼容**：内置 JEMI，直接加载各模组自带的 JEI 插件，整合包里大量模组不用单独写 EMI 适配。
+- **配方 API**：模组可以用 `dev.emi.emi.api` 注册自己的配方类型，发布物带 `api` 分类 jar。
+- **游戏内设置**：内置配置界面，侧边栏、行为等选项都能在游戏里改。
+- **客户端 mod**：装客户端即可，多人游戏时服务端不要求安装。
+
+## 安装
+
+1. 游戏版本 **1.20.1**，加载器 **Fabric** 或 **Forge**。
+2. Fabric 端额外安装 **Fabric API**。
+3. 把 jar 放进 `mods/`。
+4. 客户端即可；服务端不装也能进服务器。
+
+## 使用
+
+### 打开与搜索
+
+- 打开物品列表的键位在「控制 → 按键绑定」的 EMI 分类里，可以按习惯改。
+- 搜索框里 `@modid` 限定模组，`#tag` 限定标签，其余按名称和提示文本匹配。
+
+### 看配方
+
+- 鼠标放在物品上，用配方键位打开配方详情。
+- 详情页里可以切换这个物品的配方、用途等视图。
+
+### 配方树
+
+打开任意配方详情后切到「配方树」，能看到这个成品从原材料一步步合成过来的完整树；点树上的节点可以继续展开。
+
+### 查看全部配方
+
+在键位设置里给「查看全部配方」绑定一个按键，鼠标放到物品上按下，会列出它作为产物的全部配方。
+
+## 与上游的关系
+
+- 上游 EMI 按 Minecraft 版本分分支（1.18.2、1.19.x、1.20.x、1.21），持续更新。
+- 本 fork 只维护 **1.20.1**（`1.20.1` 分支）；其余分支是上游副本，不保证能构建，也不接受反馈。
+- 上游 1.20 分支的修复会按需同步，本 fork 的改动以「1.20.1 能跑」为准。
+
+## 开发
+
+### 作为依赖
+
+把 EMI 加进项目需要先加仓库：
+
 ```gradle
 repositories {
 	maven {
@@ -27,9 +74,7 @@ repositories {
 }
 ```
 
-How EMI gets added to your dependencies varies based on modloader and setup.
-The Gradle property `emi_version` should be something like `1.0.0+1.19.4` with EMI's version and Minecraft's version.
-Here are common dependency setups for different loaders and build systems.
+`emi_version` 形如 `1.1.24+1.20.1`（EMI 版本 + Minecraft 版本），按加载器和构建系统选择依赖：
 
 ```gradle
 dependencies {
@@ -37,29 +82,60 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${emi_version}:api"
 	modLocalRuntime "dev.emi:emi-fabric:${emi_version}"
 
-	// Forge (see below block as well if you use Forge Gradle)
+	// Forge（如果你用 Forge Gradle，再看下面的 mixin refmap 设置）
 	compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
-	runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
+	runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
 	// Architectury
 	modCompileOnly "dev.emi:emi-xplat-intermediary:${emi_version}:api"
 
-	// MultiLoader Template/VanillaGradle
+	// MultiLoader Template / VanillaGradle
 	compileOnly "dev.emi:emi-xplat-mojmap:${emi_version}:api"
 }
 ```
 
-For Forge Gradle users, you will need to enable Mixin refmaps in your client sourceset. This can be done by adding 2 lines inside of your client runs, to look like below.
+Forge Gradle 用户需要在客户端 run 里打开 Mixin refmap：
 
 ```gradle
 runs {
 	client {
-		// Add these two lines
+		// 加这两行
 		property 'mixin.env.remapRefMap', 'true'
 		property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
-		// The rest of the code that was already here
+		// 其余保持原样
 		// ...
 	}
 }
 ```
+
+### 构建
+
+需要 **JDK 17**：
+
+```bash
+./gradlew build   # 产物：fabric/build/libs/、forge/build/libs/
+```
+
+发布构建时设置 `RELEASE=1` 环境变量，版本号会去掉 `-SNAPSHOT`。
+
+## 常见问题
+
+**支持 1.21 / 1.19 / NeoForge 吗？**
+不支持。本仓库只维护 1.20.1；上游其它版本分支不在本 fork 的维护范围内。
+
+**和 JEI / REI 能一起装吗？**
+一般只装 EMI 就够，JEMI 会复用 JEI 插件；两个查看器同时装会各自显示，按喜好保留一个即可。
+
+**整合包能直接用吗？**
+可以。Fabric 端带 Fabric API，客户端装 jar 即可。
+
+**为什么版本号是 `1.1.24+1.20.1`？**
+沿用上游版本号规则（EMI 版本 + Minecraft 版本），方便和上游对应。
+
+**上游更新会跟吗？**
+按需同步上游 1.20 分支的修复；其它版本不做。
+
+## 许可证
+
+MIT License。上游代码与美术版权归 Emi（emilyploszaj）；本 fork 的改动归 wdlpiaoyi 与 deepseek。
