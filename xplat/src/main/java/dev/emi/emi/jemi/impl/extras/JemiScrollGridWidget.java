@@ -5,7 +5,10 @@ import java.util.Optional;
 
 import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
 import mezz.jei.api.gui.inputs.RecipeSlotUnderMouse;
+import mezz.jei.api.gui.placement.HorizontalAlignment;
+import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IScrollGridWidget;
+import mezz.jei.api.gui.widgets.ScrollbarVisibility;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
 
@@ -15,6 +18,7 @@ public class JemiScrollGridWidget implements IScrollGridWidget {
 	public int x, y;
 	public int gridWidth, gridHeight;
 	public int width, height;
+	public ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.DEFAULT;
 
 	public JemiScrollGridWidget(List<IRecipeSlotDrawable> slots, int x, int y, int gridWidth, int gridHeight) {
 		this.slots = slots;
@@ -45,6 +49,14 @@ public class JemiScrollGridWidget implements IScrollGridWidget {
 	}
 
 	@Override
+	public IScrollGridWidget setPosition(int areaX, int areaY, int areaWidth, int areaHeight,
+			HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
+		this.x = areaX + horizontalAlignment.getXPos(areaWidth, width);
+		this.y = areaY + verticalAlignment.getYPos(areaHeight, height);
+		return this;
+	}
+
+	@Override
 	public int getWidth() {
 		return width;
 	}
@@ -57,5 +69,17 @@ public class JemiScrollGridWidget implements IScrollGridWidget {
 	@Override
 	public ScreenRect getScreenRectangle() {
 		return new ScreenRect(getPosition(), getWidth(), getHeight());
+	}
+
+	@Override
+	public IScrollGridWidget setSlots(List<IRecipeSlotDrawable> slots) {
+		this.slots = slots;
+		return this;
+	}
+
+	@Override
+	public IScrollGridWidget setScrollbarVisibility(ScrollbarVisibility visibility) {
+		this.scrollbarVisibility = visibility;
+		return this;
 	}
 }

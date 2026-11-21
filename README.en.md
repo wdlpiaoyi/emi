@@ -110,7 +110,7 @@ runs {
 
 ### Building
 
-Requires **JDK 17**. This fork maintains the Forge side only:
+Requires **JDK 21** to run Gradle (sources still target Java 17). If a global Gradle config pins `org.gradle.java.home` to JDK 17, point it at JDK 21 or remove it. This fork maintains the Forge side only:
 
 ```bash
 ./gradlew :forge:build   # Output: forge/build/libs/
@@ -124,7 +124,7 @@ Requires **JDK 17**. This fork maintains the Forge side only:
 No. This fork only maintains 1.20.1 on Forge; the Fabric side and other version branches are out of scope here.
 
 **Can it be installed alongside JEI / REI?**
-EMI alone is usually enough — JEMI reuses JEI plugins. Installing both viewers makes each render its own screen; keep whichever you prefer.
+EMI alone is usually enough — JEMI reuses JEI plugins and requires JEI 15.75.0.239 or newer. Installing both viewers makes each render its own screen; keep whichever you prefer.
 
 **Can a modpack ship it?**
 Yes. Put the Forge jar into `mods/` on the client.

@@ -21,6 +21,7 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.registry.tag.TagKey;
 
 @SuppressWarnings("unchecked")
 public class JemiRecipeSlot implements IRecipeSlotView {
@@ -80,6 +81,11 @@ public class JemiRecipeSlot implements IRecipeSlotView {
 	}
 
 	@Override
+	public List<ITypedIngredient<?>> getAllIngredientsList() {
+		return getAllIngredients().toList();
+	}
+
+	@Override
 	public boolean isEmpty() {
 		return stack.isEmpty();
 	}
@@ -99,8 +105,20 @@ public class JemiRecipeSlot implements IRecipeSlotView {
 	}
 
 	@Override
+	public Stream<ITypedIngredient<?>> getDisplayedIngredients() {
+		ITypedIngredient<?> displayed = getDisplayedIngredient().orElse(null);
+		return displayed == null ? Stream.empty() : Stream.of(displayed);
+	}
+
+	@Override
 	public Optional<String> getSlotName() {
 		return name;
+	}
+
+	@Override
+	public Optional<TagKey<?>> getTagKey() {
+		// JEMI does not track tags for slots
+		return Optional.empty();
 	}
 
 	@Override

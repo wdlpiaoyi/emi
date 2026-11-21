@@ -94,7 +94,7 @@ public class JemiStack<T> extends EmiStack {
 		MinecraftClient client = MinecraftClient.getInstance();
 		JemiTooltipBuilder builder = new JemiTooltipBuilder();
 		renderer.getTooltip(builder, ingredient, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
-		list.addAll(builder.tooltip);
+		list.addAll(builder.getTooltipComponents());
 
 		Identifier id = getId();
 		if (EmiConfig.appendModId && id != null) {

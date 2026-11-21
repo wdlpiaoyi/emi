@@ -110,7 +110,7 @@ runs {
 
 ### 构建
 
-需要 **JDK 17**。本 fork 只维护 Forge 端：
+需要 **JDK 21** 运行 Gradle（编译目标仍是 Java 17）。如果全局 Gradle 配置把 `org.gradle.java.home` 固定成 JDK 17，需要改成 JDK 21 或去掉该配置。本 fork 只维护 Forge 端：
 
 ```bash
 ./gradlew :forge:build   # 产物：forge/build/libs/
@@ -124,7 +124,7 @@ runs {
 不支持。本仓库只维护 1.20.1 的 Forge 端；Fabric 端和其它版本分支不在本 fork 的维护范围内。
 
 **和 JEI / REI 能一起装吗？**
-一般只装 EMI 就够，JEMI 会复用 JEI 插件；两个查看器同时装会各自显示，按喜好保留一个即可。
+一般只装 EMI 就够，JEMI 会复用 JEI 插件；JEMI 需要 JEI 15.75.0.239 或更新。两个查看器同时装会各自显示，按喜好保留一个即可。
 
 **整合包能直接用吗？**
 可以。Forge 端把 jar 放进 `mods/` 即可，客户端安装。

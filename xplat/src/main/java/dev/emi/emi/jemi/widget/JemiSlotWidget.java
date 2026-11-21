@@ -120,7 +120,7 @@ public class JemiSlotWidget extends SlotWidget {
 			try {
 				JemiTooltipBuilder tooltipBuilder = new JemiTooltipBuilder();
 				slot.richTooltipCallback.onRichTooltip(slot, tooltipBuilder);
-				list.addAll(tooltipBuilder.tooltip);
+				list.addAll(tooltipBuilder.getTooltipComponents());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

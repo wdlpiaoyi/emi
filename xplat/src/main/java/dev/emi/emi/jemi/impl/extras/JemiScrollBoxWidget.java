@@ -4,6 +4,7 @@ import java.util.List;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.widgets.IScrollBoxWidget;
+import mezz.jei.api.gui.widgets.ScrollbarVisibility;
 import net.minecraft.client.gui.ScreenPos;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.text.StringVisitable;
@@ -12,6 +13,7 @@ public class JemiScrollBoxWidget implements IScrollBoxWidget {
 	private static final int SCROLL_BAR_WIDTH = 18;
 	public int x, y;
 	public int width, height;
+	public ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.DEFAULT;
 
 	public JemiScrollBoxWidget(int x, int y, int width, int height) {
 		this.x = x;
@@ -51,5 +53,10 @@ public class JemiScrollBoxWidget implements IScrollBoxWidget {
 		// Unimplemented
 		return this;
 	}
-	
+
+	@Override
+	public IScrollBoxWidget setScrollbarVisibility(ScrollbarVisibility visibility) {
+		this.scrollbarVisibility = visibility;
+		return this;
+	}
 }

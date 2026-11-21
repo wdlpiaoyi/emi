@@ -1,6 +1,7 @@
 package dev.emi.emi.jemi.impl.extras;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
 
@@ -11,6 +12,9 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotDrawablesView;
 import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import mezz.jei.api.gui.inputs.IJeiInputHandler;
 import mezz.jei.api.gui.placement.IPlaceable;
+import mezz.jei.api.gui.widgets.IButtonWidget;
+import mezz.jei.api.gui.widgets.ICycleButtonWidget;
+import mezz.jei.api.gui.widgets.IDrawableWidget;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.gui.widgets.IRecipeWidget;
 import mezz.jei.api.gui.widgets.IScrollBoxWidget;
@@ -23,7 +27,7 @@ public class JemiRecipeExtrasBuilder implements IRecipeExtrasBuilder {
 	public IRecipeSlotDrawablesView slots;
 	public List<IJeiInputHandler> inputHandlers = Lists.newArrayList();
 	public List<IJeiGuiEventListener> eventListeners = Lists.newArrayList();
-	public List<JemiWidgetBuilder> widgets = Lists.newArrayList();
+	public List<JemiExtraWidget> widgets = Lists.newArrayList();
 
 	public JemiRecipeExtrasBuilder(IRecipeSlotDrawablesView slots) {
 		this.slots = slots;
@@ -36,7 +40,7 @@ public class JemiRecipeExtrasBuilder implements IRecipeExtrasBuilder {
 
 	@Override
 	public void addDrawable(IDrawable drawable, int xPos, int yPos) {
-		addDrawable(drawable).setPosition(xPos, yPos);
+		addDrawableWidget(drawable).setPosition(xPos, yPos);
 	}
 
 	@Override
@@ -46,6 +50,26 @@ public class JemiRecipeExtrasBuilder implements IRecipeExtrasBuilder {
 				drawable.draw(raw);
 			});
 		}));
+	}
+
+	@Override
+	public IDrawableWidget addDrawableWidget(IDrawable drawable) {
+		return addExtra(new JemiDrawableWidget(drawable));
+	}
+
+	@Override
+	public IDrawableWidget addTooltipArea(int xPos, int yPos, int width, int height) {
+		return addExtra(new JemiDrawableWidget(null, width, height)).setPosition(xPos, yPos);
+	}
+
+	@Override
+	public IButtonWidget<?> addButton(int width, int height, Runnable onPress) {
+		return addExtra(new JemiButtonWidget(width, height, onPress));
+	}
+
+	@Override
+	public <T> ICycleButtonWidget<T> addCycleButton(List<T> values, T initialValue, int width, int height, Consumer<T> onValueChanged) {
+		return addExtra(new JemiCycleButtonWidget<T>(values, initialValue, width, height, onValueChanged));
 	}
 
 	@Override
@@ -95,8 +119,23 @@ public class JemiRecipeExtrasBuilder implements IRecipeExtrasBuilder {
 	}
 
 	@Override
+	public IDrawableWidget addRecipeArrowWidget() {
+		return addExtra(new JemiDrawableWidget(EmiTexture.EMPTY_ARROW));
+	}
+
+	@Override
+	public IDrawableWidget addRecipePlusSignWidget() {
+		return addExtra(new JemiDrawableWidget(EmiTexture.PLUS));
+	}
+
+	@Override
 	public IPlaceable<?> addAnimatedRecipeArrow(int ticksPerCycle) {
 		return addAnimatedEmiTexture(EmiTexture.EMPTY_ARROW, EmiTexture.FULL_ARROW, ticksPerCycle * 1000 / 20, true, false, false);
+	}
+
+	@Override
+	public IDrawableWidget addAnimatedRecipeArrowWidget(int ticksPerCycle) {
+		return addExtra(new JemiDrawableWidget(EmiTexture.EMPTY_ARROW, EmiTexture.FULL_ARROW, ticksPerCycle * 1000 / 20, true, false, false));
 	}
 
 	@Override
@@ -105,8 +144,18 @@ public class JemiRecipeExtrasBuilder implements IRecipeExtrasBuilder {
 	}
 
 	@Override
+	public IDrawableWidget addAnimatedRecipeFlameWidget(int cookTime) {
+		return addExtra(new JemiDrawableWidget(EmiTexture.EMPTY_FLAME, EmiTexture.FULL_FLAME, cookTime * 1000 / 20, false, true, true));
+	}
+
+	@Override
 	public ITextWidget addText(List<StringVisitable> text, int maxWidth, int maxHeight) {
-		return new JemiTextWidget(text, maxWidth, maxHeight);
+		return addExtra(new JemiTextWidget(text, maxWidth, maxHeight));
+	}
+
+	private <W extends JemiExtraWidget> W addExtra(W widget) {
+		widgets.add(widget);
+		return widget;
 	}
 
 	private IPlaceable<?> addEmiTexture(EmiTexture texture) {

@@ -18,6 +18,7 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.Rect2i;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 
 public class JemiRecipeSlotDrawable implements IRecipeSlotDrawable {
@@ -30,8 +31,18 @@ public class JemiRecipeSlotDrawable implements IRecipeSlotDrawable {
 	}
 
 	@Override
+	public List<ITypedIngredient<?>> getAllIngredientsList() {
+		return widget.slot.getAllIngredientsList();
+	}
+
+	@Override
 	public Optional<ITypedIngredient<?>> getDisplayedIngredient() {
 		return widget.slot.getDisplayedIngredient();
+	}
+
+	@Override
+	public Stream<ITypedIngredient<?>> getDisplayedIngredients() {
+		return widget.slot.getDisplayedIngredients();
 	}
 
 	@Override
@@ -47,6 +58,11 @@ public class JemiRecipeSlotDrawable implements IRecipeSlotDrawable {
 	@Override
 	public Optional<String> getSlotName() {
 		return widget.slot.getSlotName();
+	}
+
+	@Override
+	public Optional<TagKey<?>> getTagKey() {
+		return widget.slot.getTagKey();
 	}
 
 	@Override
@@ -69,6 +85,11 @@ public class JemiRecipeSlotDrawable implements IRecipeSlotDrawable {
 	@Override
 	public void getTooltip(ITooltipBuilder tooltipBuilder) {
 		// Unimplemented
+	}
+
+	@Override
+	public void drawTooltip(DrawContext raw, int mouseX, int mouseY) {
+		// EMI renders tooltips through its own widgets
 	}
 
 	@Override

@@ -20,7 +20,10 @@ import dev.emi.emi.jemi.impl.JemiIngredientAcceptor;
 import dev.emi.emi.jemi.impl.JemiRecipeLayoutBuilder;
 import dev.emi.emi.jemi.impl.JemiRecipeSlot;
 import dev.emi.emi.jemi.impl.JemiRecipeSlotBuilder;
+import dev.emi.emi.jemi.impl.JemiRecipeSlotDrawable;
+import dev.emi.emi.jemi.impl.JemiRecipeSlotDrawablesView;
 import dev.emi.emi.jemi.impl.JemiTooltipBuilder;
+import dev.emi.emi.jemi.impl.extras.JemiExtraWidget;
 import dev.emi.emi.jemi.impl.extras.JemiRecipeExtrasBuilder;
 import dev.emi.emi.jemi.impl.extras.JemiWidgetBuilder;
 import dev.emi.emi.jemi.widget.JemiSlotWidget;
@@ -133,22 +136,29 @@ public class JemiRecipe<T> implements EmiRecipe {
 		for (JemiRecipeSlotBuilder jrsb : builder.slots) {
 			jrsb.acceptor.coerceStacks(jrsb.tooltipCallback, jrsb.renderers);
 		}
+		JemiRecipeSlotDrawablesView slotDrawables = new JemiRecipeSlotDrawablesView();
 		if (opt.isPresent()) {
 			widgets.add(new JemiWidget(0, 0, getDisplayWidth(), getDisplayHeight(), opt.get()));
 			for (JemiRecipeSlotBuilder sb : builder.slots) {
 				JemiRecipeSlot slot = new JemiRecipeSlot(sb);
+				JemiRecipeSlotDrawable drawable = new JemiRecipeSlotDrawable();
 				if (slot.tankInfo != null && !slot.getIngredients(JemiUtil.getFluidType()).toList().isEmpty()) {
-					widgets.add(new JemiTankWidget(slot, this));
+					JemiTankWidget tank = new JemiTankWidget(slot, this);
+					widgets.add(tank);
+					drawable.widget = tank.jsw;
 				} else {
-					widgets.add(new JemiSlotWidget(slot, this));
+					JemiSlotWidget widget = new JemiSlotWidget(slot, this);
+					widgets.add(widget);
+					drawable.widget = widget;
 				}
+				slotDrawables.slots.add(drawable);
 			}
 		}
 		try {
-			JemiRecipeExtrasBuilder extras = new JemiRecipeExtrasBuilder(null);
+			JemiRecipeExtrasBuilder extras = new JemiRecipeExtrasBuilder(slotDrawables);
 			category.createRecipeExtras(extras, recipe, JemiPlugin.runtime.getJeiHelpers().getFocusFactory().getEmptyFocusGroup());
-			for (JemiWidgetBuilder b : extras.widgets) {
-				b.addWidgets(widgets);
+			for (JemiExtraWidget widget : extras.widgets) {
+				widget.addWidgets(widgets);
 			}
 		} catch(Throwable t) {
 			EmiLog.error("Exception adding JEMI extras", t);
@@ -191,7 +201,7 @@ public class JemiRecipe<T> implements EmiRecipe {
 		public List<TooltipComponent> getTooltip(int mouseX, int mouseY) {
 			JemiTooltipBuilder builder = new JemiTooltipBuilder();
 			category.getTooltip(builder, recipe, recipeLayoutDrawable.getRecipeSlotsView(), mouseX, mouseY);
-			return builder.tooltip;
+			return builder.getTooltipComponents();
 		}
 
 		@Override

@@ -14,7 +14,7 @@ import net.minecraft.client.gui.tooltip.TooltipComponent;
 
 public class JemiTankWidget extends TankWidget {
 	private final JemiRecipeSlot slot;
-	private final JemiSlotWidget jsw;
+	public final JemiSlotWidget jsw;
 
 	public JemiTankWidget(JemiRecipeSlot slot, EmiRecipe recipe) {
 		super(slot.stack, slot.x - 1, slot.y - 1, slot.tankInfo.width() + 2, slot.tankInfo.height() + 2, slot.tankInfo.capacity());

@@ -13,8 +13,11 @@ import dev.emi.emi.jemi.impl.JemiRecipeSlot.OffsetDrawable;
 import dev.emi.emi.jemi.impl.JemiRecipeSlot.TankInfo;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.TilingDirection;
 import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import mezz.jei.api.gui.placement.HorizontalAlignment;
+import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
@@ -100,7 +103,19 @@ public class JemiRecipeSlotBuilder implements IRecipeSlotBuilder {
 	}
 
 	@Override
+	public IRecipeSlotBuilder setHoverPadding(int paddingTop, int paddingBottom, int paddingLeft, int paddingRight) {
+		// Unimplemented
+		return this;
+	}
+
+	@Override
 	public IRecipeSlotBuilder setFluidRenderer(long capacity, boolean showCapacity, int width, int height) {
+		this.tankInfo = new TankInfo(width, height, capacity, showCapacity);
+		return this;
+	}
+
+	@Override
+	public IRecipeSlotBuilder setFluidRenderer(long capacity, boolean showCapacity, int width, int height, TilingDirection tilingDirection) {
 		this.tankInfo = new TankInfo(width, height, capacity, showCapacity);
 		return this;
 	}
@@ -137,6 +152,14 @@ public class JemiRecipeSlotBuilder implements IRecipeSlotBuilder {
 	public IRecipeSlotBuilder setPosition(int xPos, int yPos) {
 		this.x = xPos;
 		this.y = yPos;
+		return this;
+	}
+
+	@Override
+	public IRecipeSlotBuilder setPosition(int areaX, int areaY, int areaWidth, int areaHeight,
+			HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
+		this.x = areaX + horizontalAlignment.getXPos(areaWidth, getWidth());
+		this.y = areaY + verticalAlignment.getYPos(areaHeight, getHeight());
 		return this;
 	}
 
