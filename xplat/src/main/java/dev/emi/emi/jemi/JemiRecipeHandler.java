@@ -186,7 +186,11 @@ public class JemiRecipeHandler<T extends ScreenHandler, R> implements EmiRecipeH
 						addBlankIngredients(builder, slotWidgets, 3, RecipeIngredientRole.INPUT);
 						blankedSlots += 3;
 					}
-					addIngredients(builder, slotWidgets, recipe.getInputs().subList(0, Math.max(9, recipe.getInputs().size()) - blankedSlots), RecipeIngredientRole.INPUT);
+					// Recipes with fewer than 9 input slots (for example a 1x2 shaped recipe) can end up with
+					// a subList end index larger than the input list, so clamp it to the list size.
+					int inputSize = recipe.getInputs().size();
+					int end = Math.min(inputSize, Math.max(0, Math.max(9, inputSize) - blankedSlots));
+					addIngredients(builder, slotWidgets, recipe.getInputs().subList(0, end), RecipeIngredientRole.INPUT);
 				}
 			} else {
 				addIngredients(builder, slotWidgets, recipe.getInputs(), RecipeIngredientRole.INPUT);
