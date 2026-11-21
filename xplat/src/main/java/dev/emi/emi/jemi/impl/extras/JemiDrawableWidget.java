@@ -112,7 +112,8 @@ public class JemiDrawableWidget implements IDrawableWidget, JemiExtraWidget {
 			holder.addTexture(texture, x, y);
 		} else if (drawable != null) {
 			holder.addDrawable(x, y, width, height, (raw, mouseX, mouseY, delta) -> {
-				drawable.draw(raw, x, y);
+				// EMI translates the draw context to the widget position, so draw locally
+				drawable.draw(raw);
 			});
 		}
 		holder.addTooltip((mouseX, mouseY) -> tooltip.build(), x, y, width, height);

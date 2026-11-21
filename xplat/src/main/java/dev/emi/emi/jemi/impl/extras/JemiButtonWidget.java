@@ -107,7 +107,8 @@ public class JemiButtonWidget implements IButtonWidget<JemiButtonWidget>, JemiEx
 		}
 		if (icon != null) {
 			holder.addDrawable(x, y, width, height, (raw, mouseX, mouseY, delta) -> {
-				icon.draw(raw, x, y);
+				// EMI translates the draw context to the widget position, so draw locally
+				icon.draw(raw);
 			});
 		} else if (message != null) {
 			holder.addText(message, x, y, 0xffffffff, true);

@@ -150,7 +150,8 @@ public class JemiCycleButtonWidget<T> implements ICycleButtonWidget<T>, JemiExtr
 		Text shownMessage = messageFunction != null ? messageFunction.apply(value) : message;
 		if (shownIcon != null) {
 			holder.addDrawable(x, y, width, height, (raw, mouseX, mouseY, delta) -> {
-				shownIcon.draw(raw, x, y);
+				// EMI translates the draw context to the widget position, so draw locally
+				shownIcon.draw(raw);
 			});
 		} else if (shownMessage != null) {
 			holder.addText(shownMessage, x, y, 0xffffffff, true);
