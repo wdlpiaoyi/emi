@@ -1,9 +1,20 @@
 # EMI
 EMI is a featureful and accessible item and recipe viewer for Minecraft.
 
+> [!NOTE]
+> **This is [wdlpiaoyi](https://github.com/wdlpiaoyi)'s fork of [EMI](https://github.com/emilyploszaj/emi).**
+> Only **Minecraft 1.20.1** is maintained in this fork for now (本仓库目前只维护 Minecraft 1.20.1).
+> The `1.20.1` branch is the active branch; every other branch is an unmaintained copy from upstream.
+
 ![EMI Interface](https://user-images.githubusercontent.com/14813658/224562247-1588064e-39ef-475a-9108-d7a357af6939.png)
 
 ![Recipe Tree](https://user-images.githubusercontent.com/14813658/224562258-1a5ee67a-fd7f-489f-9eed-ae67c184ddac.png)
+
+## Branches
+| Branch | Status |
+| --- | --- |
+| `1.20.1` | **Maintained** — the only supported branch in this fork for now |
+| all others | Unmaintained; copied from [upstream EMI](https://github.com/emilyploszaj/emi) |
 
 ## Developers
 To add EMI to your project as a dependency you need to add the following to your `build.gradle`:
