@@ -137,4 +137,4 @@ Fixes from upstream's 1.20 branch are merged as needed; other versions are not.
 
 ## License
 
-MIT License. Upstream code and art are copyright Emi (emilyploszaj); changes in this fork are copyright wdlpiaoyi and deepseek.
+MIT License. Upstream code and art are copyright Emi (emilyploszaj); changes in this fork are copyright wdlpiaoyi. Some changes were drafted with AI assistance, which claims no copyright.

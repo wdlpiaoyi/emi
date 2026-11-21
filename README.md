@@ -137,4 +137,4 @@ runs {
 
 ## 许可证
 
-MIT License。上游代码与美术版权归 Emi（emilyploszaj）；本 fork 的改动归 wdlpiaoyi 与 deepseek。
+MIT License。上游代码与美术版权归 Emi（emilyploszaj）；本 fork 的改动版权归 wdlpiaoyi。部分改动借助 AI 工具协助完成，AI 不主张版权。
