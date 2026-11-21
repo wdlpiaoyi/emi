@@ -7,13 +7,13 @@
 | | |
 |---|---|
 | Minecraft | 1.20.1 |
-| Loader | Fabric / Forge |
+| Loader | Forge |
 | Mod ID | `emi` |
 | Sides | Client (server installation optional) |
-| Dependencies | Fabric API on Fabric; JEI optional |
+| Dependencies | None (JEI optional) |
 | License | MIT |
 
-This repository is a fork of upstream [EMI](https://github.com/emilyploszaj/emi), hosted at [wdlpiaoyi/emi](https://github.com/wdlpiaoyi/emi) and maintained by wdlpiaoyi and deepseek. Only **Minecraft 1.20.1** is maintained. The display name stays **EMI**, and the `modId`, packages and registry namespace stay `emi` / `dev.emi`, so mods and resource packs that hard-code the mod ID keep working.
+This repository is a fork of upstream [EMI](https://github.com/emilyploszaj/emi), hosted at [wdlpiaoyi/emi](https://github.com/wdlpiaoyi/emi) and maintained by wdlpiaoyi and deepseek. **Only Minecraft 1.20.1 on Forge is maintained for now.** Upstream ships both Fabric and Forge; this fork uses the Forge side only, so the Fabric side is unmaintained and not guaranteed to build. The display name stays **EMI**, and the `modId`, packages and registry namespace stay `emi` / `dev.emi`, so mods and resource packs that hard-code the mod ID keep working.
 
 ## Features
 
@@ -28,10 +28,9 @@ This repository is a fork of upstream [EMI](https://github.com/emilyploszaj/emi)
 
 ## Installation
 
-1. Minecraft **1.20.1** with **Fabric** or **Forge**.
-2. On Fabric, install **Fabric API** as well.
-3. Put the jar into `mods/`.
-4. Client only — the server does not need it either.
+1. Minecraft **1.20.1** with **Forge** (47.x).
+2. Put the Forge jar into `mods/`.
+3. Client only — the server does not need it either.
 
 ## Usage
 
@@ -56,8 +55,8 @@ Bind a key to “Display all recipes” in the key binds screen; hover an item a
 ## Relation to upstream
 
 - Upstream EMI keeps one branch per Minecraft version (1.18.2, 1.19.x, 1.20.x, 1.21) and keeps updating them.
-- This fork only maintains **1.20.1** (the `1.20.1` branch); all other branches are copies from upstream, are not guaranteed to build, and are not supported.
-- Fixes from upstream's 1.20 branch are merged as needed; changes here are validated against 1.20.1 only.
+- This fork only maintains **1.20.1 on Forge** (the Forge side of the `1.20.1` branch); the Fabric side and all other branches are copies from upstream, are not guaranteed to build, and are not supported.
+- Fixes from upstream's 1.20 branch are merged as needed; changes here are validated against 1.20.1 Forge only.
 
 ## Development
 
@@ -74,7 +73,7 @@ repositories {
 }
 ```
 
-`emi_version` looks like `1.1.24+1.20.1` (EMI version + Minecraft version). Pick the dependency for your loader and build system:
+`emi_version` looks like `1.1.24+1.20.1` (EMI version + Minecraft version). The coordinates below follow the upstream docs; this fork maintains Forge only, so the Fabric / Architectury entries are for reference:
 
 ```gradle
 dependencies {
@@ -111,24 +110,24 @@ runs {
 
 ### Building
 
-Requires **JDK 17**:
+Requires **JDK 17**. This fork maintains the Forge side only:
 
 ```bash
-./gradlew build   # Output: fabric/build/libs/, forge/build/libs/
+./gradlew :forge:build   # Output: forge/build/libs/
 ```
 
-Set the `RELEASE=1` environment variable for release builds to drop the `-SNAPSHOT` suffix from the version.
+`./gradlew build` also builds the Fabric side (an upstream copy, unmaintained). Set the `RELEASE=1` environment variable for release builds to drop the `-SNAPSHOT` suffix from the version.
 
 ## FAQ
 
-**Does it support 1.21 / 1.19 / NeoForge?**
-No. This fork only maintains 1.20.1; upstream's other version branches are out of scope here.
+**Does it support 1.21 / 1.19 / NeoForge / Fabric?**
+No. This fork only maintains 1.20.1 on Forge; the Fabric side and other version branches are out of scope here.
 
 **Can it be installed alongside JEI / REI?**
 EMI alone is usually enough — JEMI reuses JEI plugins. Installing both viewers makes each render its own screen; keep whichever you prefer.
 
 **Can a modpack ship it?**
-Yes. On Fabric include Fabric API, and put the jar on the client.
+Yes. Put the Forge jar into `mods/` on the client.
 
 **Why is the version `1.1.24+1.20.1`?**
 It follows upstream's scheme (EMI version + Minecraft version) to stay traceable to upstream.

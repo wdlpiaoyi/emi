@@ -7,13 +7,13 @@
 | 项目 | 内容 |
 |---|---|
 | 游戏版本 | 1.20.1 |
-| 加载器 | Fabric / Forge |
+| 加载器 | Forge |
 | 模组 ID | `emi` |
 | 安装端 | 客户端（服务端装不装都行） |
-| 前置 | Fabric 端需 Fabric API；JEI 可选 |
+| 前置 | 无（JEI 可选） |
 | 许可证 | MIT |
 
-本仓库是上游 [EMI](https://github.com/emilyploszaj/emi) 的 fork，托管在 [wdlpiaoyi/emi](https://github.com/wdlpiaoyi/emi)，由 wdlpiaoyi 与 deepseek 维护，只维护 **Minecraft 1.20.1**。展示名仍是 **EMI**，`modId`、包名与注册命名空间仍是 `emi` / `dev.emi`，按 modId 写死兼容的模组与资源包继续可用。
+本仓库是上游 [EMI](https://github.com/emilyploszaj/emi) 的 fork，托管在 [wdlpiaoyi/emi](https://github.com/wdlpiaoyi/emi)，由 wdlpiaoyi 与 deepseek 维护，**暂时只维护 Minecraft 1.20.1 的 Forge 端**。上游代码同时带 Fabric 与 Forge 两端，本 fork 只用 Forge 端，Fabric 端不维护、不保证可构建。展示名仍是 **EMI**，`modId`、包名与注册命名空间仍是 `emi` / `dev.emi`，按 modId 写死兼容的模组与资源包继续可用。
 
 ## 特性
 
@@ -28,10 +28,9 @@
 
 ## 安装
 
-1. 游戏版本 **1.20.1**，加载器 **Fabric** 或 **Forge**。
-2. Fabric 端额外安装 **Fabric API**。
-3. 把 jar 放进 `mods/`。
-4. 客户端即可；服务端不装也能进服务器。
+1. 游戏版本 **1.20.1**，加载器 **Forge**（47.x）。
+2. 把 Forge 端 jar 放进 `mods/`。
+3. 客户端即可；服务端不装也能进服务器。
 
 ## 使用
 
@@ -56,8 +55,8 @@
 ## 与上游的关系
 
 - 上游 EMI 按 Minecraft 版本分分支（1.18.2、1.19.x、1.20.x、1.21），持续更新。
-- 本 fork 只维护 **1.20.1**（`1.20.1` 分支）；其余分支是上游副本，不保证能构建，也不接受反馈。
-- 上游 1.20 分支的修复会按需同步，本 fork 的改动以「1.20.1 能跑」为准。
+- 本 fork 只维护 **1.20.1 + Forge**（`1.20.1` 分支的 Forge 端）；Fabric 端与其它版本分支都是上游副本，不保证能构建，也不接受反馈。
+- 上游 1.20 分支的修复会按需同步，本 fork 的改动以「1.20.1 Forge 能跑」为准。
 
 ## 开发
 
@@ -74,7 +73,7 @@ repositories {
 }
 ```
 
-`emi_version` 形如 `1.1.24+1.20.1`（EMI 版本 + Minecraft 版本），按加载器和构建系统选择依赖：
+`emi_version` 形如 `1.1.24+1.20.1`（EMI 版本 + Minecraft 版本）。下面坐标照上游文档列出，本 fork 只维护 Forge 端，Fabric / Architectury 坐标仅作参考：
 
 ```gradle
 dependencies {
@@ -111,24 +110,24 @@ runs {
 
 ### 构建
 
-需要 **JDK 17**：
+需要 **JDK 17**。本 fork 只维护 Forge 端：
 
 ```bash
-./gradlew build   # 产物：fabric/build/libs/、forge/build/libs/
+./gradlew :forge:build   # 产物：forge/build/libs/
 ```
 
-发布构建时设置 `RELEASE=1` 环境变量，版本号会去掉 `-SNAPSHOT`。
+`./gradlew build` 会把 Fabric 端一起构建（上游副本，不维护）。发布构建时设置 `RELEASE=1` 环境变量，版本号会去掉 `-SNAPSHOT`。
 
 ## 常见问题
 
-**支持 1.21 / 1.19 / NeoForge 吗？**
-不支持。本仓库只维护 1.20.1；上游其它版本分支不在本 fork 的维护范围内。
+**支持 1.21 / 1.19 / NeoForge / Fabric 吗？**
+不支持。本仓库只维护 1.20.1 的 Forge 端；Fabric 端和其它版本分支不在本 fork 的维护范围内。
 
 **和 JEI / REI 能一起装吗？**
 一般只装 EMI 就够，JEMI 会复用 JEI 插件；两个查看器同时装会各自显示，按喜好保留一个即可。
 
 **整合包能直接用吗？**
-可以。Fabric 端带 Fabric API，客户端装 jar 即可。
+可以。Forge 端把 jar 放进 `mods/` 即可，客户端安装。
 
 **为什么版本号是 `1.1.24+1.20.1`？**
 沿用上游版本号规则（EMI 版本 + Minecraft 版本），方便和上游对应。
