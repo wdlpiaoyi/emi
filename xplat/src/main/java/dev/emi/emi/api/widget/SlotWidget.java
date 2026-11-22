@@ -247,7 +247,8 @@ public class SlotWidget extends Widget {
 			} else if (EmiConfig.favorite.isBound() && EmiConfig.helpLevel.has(HelpLevel.NORMAL) && EmiFavorites.canFavorite(getStack(), getRecipe())) {
 				list.add(TooltipComponent.of(EmiPort.ordered(EmiPort.translatable("emi.favorite_recipe", EmiConfig.favorite.getBindText()))));
 			}
-			if (EmiConfig.showCostPerBatch && recipe.supportsRecipeTree() && !(recipe instanceof EmiResolutionRecipe)) {
+			if (EmiConfig.showCostPerBatch && recipe.supportsRecipeTree() && !recipe.getOutputs().isEmpty()
+					&& !(recipe instanceof EmiResolutionRecipe)) {
 				RecipeCostTooltipComponent rctc = new RecipeCostTooltipComponent(recipe);
 				if (rctc.shouldDisplay()) {
 					list.add(rctc);
