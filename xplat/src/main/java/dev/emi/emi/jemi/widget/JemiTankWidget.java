@@ -5,6 +5,8 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.ListEmiIngredient;
 import dev.emi.emi.api.widget.TankWidget;
 import dev.emi.emi.jemi.impl.JemiRecipeSlot;
 import dev.emi.emi.runtime.EmiDrawContext;
@@ -47,6 +49,14 @@ public class JemiTankWidget extends TankWidget {
 			context.pop();
 		}
 		super.drawOverlay(context.raw(), mouseX, mouseY, delta);
+	}
+
+	@Override
+	public EmiIngredient getStack() {
+		if (slot.stack instanceof ListEmiIngredient list) {
+			return list.getDisplayedWithAmount();
+		}
+		return super.getStack();
 	}
 
 	@Override

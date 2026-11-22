@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.ListEmiIngredient;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.jemi.JemiUtil;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -101,7 +102,12 @@ public class JemiRecipeSlot implements IRecipeSlotView {
 
 	@Override
 	public Optional<ITypedIngredient<?>> getDisplayedIngredient() {
-		return JemiUtil.getTyped(stack.getEmiStacks().get(0));
+		EmiIngredient displayed = stack instanceof ListEmiIngredient list ? list.getDisplayedWithAmount() : stack;
+		List<EmiStack> stacks = displayed.getEmiStacks();
+		if (stacks.isEmpty()) {
+			return Optional.empty();
+		}
+		return JemiUtil.getTyped(stacks.get(0));
 	}
 
 	@Override

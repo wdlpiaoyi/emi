@@ -84,8 +84,7 @@ public class ListEmiIngredient implements EmiIngredient {
 
 	@Override
 	public void render(DrawContext draw, int x, int y, float delta, int flags) {
-		int item = (int) (System.currentTimeMillis() / 1000 % ingredients.size());
-		EmiIngredient current = ingredients.get(item);
+		EmiIngredient current = getDisplayed();
 		if ((flags & RENDER_ICON) != 0) {
 			current.render(draw, x, y, delta, -1 ^ RENDER_AMOUNT);
 		}
@@ -102,9 +101,25 @@ public class ListEmiIngredient implements EmiIngredient {
 		List<TooltipComponent> tooltip = Lists.newArrayList();
 		tooltip.add(new EmiTextTooltipWrapper(this, EmiPort.ordered(EmiPort.translatable("tooltip.emi.accepts"))));
 		tooltip.add(new IngredientTooltipComponent(ingredients));
-		int item = (int) (System.currentTimeMillis() / 1000 % ingredients.size());
-		tooltip.addAll(ingredients.get(item).copy().setAmount(amount).getTooltip());
+		tooltip.addAll(getDisplayedWithAmount().getTooltip());
 		return tooltip;
+	}
+
+	/**
+	 * @return The sub-ingredient currently on display, cycled on the same wall clock as rendering.
+	 */
+	@ApiStatus.Internal
+	public EmiIngredient getDisplayed() {
+		int item = (int) (System.currentTimeMillis() / 1000 % ingredients.size());
+		return ingredients.get(item);
+	}
+
+	/**
+	 * @return The displayed sub-ingredient with the amount shown by the list.
+	 */
+	@ApiStatus.Internal
+	public EmiIngredient getDisplayedWithAmount() {
+		return getDisplayed().copy().setAmount(amount);
 	}
 
 	@ApiStatus.Internal
