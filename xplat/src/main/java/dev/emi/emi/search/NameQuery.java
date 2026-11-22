@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.config.EmiConfig;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -26,6 +27,9 @@ public class NameQuery extends Query {
 	public boolean matchesUnbaked(EmiStack stack) {
 		if (getText(stack).getString().toLowerCase().contains(name)) {
 			return true;
+		}
+		if (!EmiConfig.searchItemIdByDefault) {
+			return false;
 		}
 		Identifier id = stack.getId();
 		return id != null && id.getPath().toLowerCase().contains(name);

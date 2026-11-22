@@ -143,6 +143,8 @@
   "config.emi.tooltip.general.search_tooltip_by_default": "可以直接搜索物品提示框中的内容，\n而无需使用“#”前缀",
   "config.emi.general.search_mod_name_by_default": "默认搜索包含模组名",
   "config.emi.tooltip.general.search_mod_name_by_default": "可以直接搜索模组名称，\n而无需使用“@”前缀",
+  "config.emi.general.search_item_id_by_default": "默认搜索包含物品ID",
+  "config.emi.tooltip.general.search_item_id_by_default": "搜索时同时匹配物品ID中的路径部分，\n关闭后仅ID中含有、译名中没有的词将不再命中；\n更改后需重载 EMI（F3+T）生效",
   "config.emi.general.search_tags_by_default": "默认搜索包含标签",
   "config.emi.tooltip.general.search_tags_by_default": "可以直接搜索标签，\n而无需使用“$”前缀",
   "config.emi.ui.effect_location": "效果位置",

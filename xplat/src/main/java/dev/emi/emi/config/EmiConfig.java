@@ -73,6 +73,10 @@ public class EmiConfig {
 	@ConfigValue("general.search-mod-name-by-default")
 	public static boolean searchModNameByDefault = false;
 
+	@Comment("Whether normal search queries should include the item's id path. When disabled, words that only appear in the id will no longer match.")
+	@ConfigValue("general.search-item-id-by-default")
+	public static boolean searchItemIdByDefault = true;
+
 	@ConfigGroupEnd
 	@Comment("Whether normal search queries should include the stack's tags.")
 	@ConfigValue("general.search-tags-by-default")
