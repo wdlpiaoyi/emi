@@ -43,7 +43,7 @@ import net.minecraft.util.Identifier;
 
 public class EmiRecipes {
 	public static volatile Worker activeWorker = null;
-	public static EmiRecipeManager manager = Manager.EMPTY;
+	public static volatile EmiRecipeManager manager = Manager.EMPTY;
 	public static List<Consumer<Consumer<EmiRecipe>>> lateRecipes = Lists.newArrayList();
 	public static List<Predicate<EmiRecipe>> invalidators = Lists.newArrayList();
 
@@ -152,11 +152,14 @@ public class EmiRecipes {
 	
 			Object2IntMap<Identifier> duplicateIds = new Object2IntOpenHashMap<>();
 			Set<Identifier> incorrectIds = new ObjectArraySet<>();
+			Map<EmiRecipeCategory, Integer> unregisteredCounts = Maps.newLinkedHashMap();
+			Map<EmiRecipeCategory, Identifier> unregisteredExamples = Maps.newHashMap();
 			for (EmiRecipe recipe : recipes) {
 				Identifier id = recipe.getId();
 				EmiRecipeCategory category = recipe.getCategory();
-				if (!categories.contains(category)) {
-					EmiReloadLog.warn("Recipe " + id + " loaded with unregistered category: " + category.getId());
+				if (!this.categories.contains(category)) {
+					unregisteredCounts.merge(category, 1, Integer::sum);
+					unregisteredExamples.putIfAbsent(category, id);
 				}
 				if (EmiConfig.logNonTagIngredients && recipe.supportsRecipeTree()) {
 					Set<EmiIngredient> seen = new ObjectArraySet<>(0);
@@ -181,6 +184,17 @@ public class EmiRecipes {
 				}
 			}
 	
+			for (Map.Entry<EmiRecipeCategory, Integer> entry : unregisteredCounts.entrySet()) {
+				EmiRecipeCategory category = entry.getKey();
+				int count = entry.getValue();
+				Identifier example = unregisteredExamples.get(category);
+				String categoryId = category == null ? "null" : category.getId().toString();
+				if (count == 1) {
+					EmiReloadLog.warn("Recipe " + example + " loaded with unregistered category: " + categoryId);
+				} else {
+					EmiReloadLog.warn(count + " recipes loaded with unregistered category: " + categoryId + " (e.g. " + example + ")");
+				}
+			}
 			if (EmiConfig.devMode) {
 				for (Identifier id : duplicateIds.keySet()) {
 					EmiReloadLog.warn(duplicateIds.getInt(id) + " recipes loaded with the same id: " + id);
@@ -292,12 +306,14 @@ public class EmiRecipes {
 	}
 
 	private static class Worker implements Runnable {
-		private List<EmiRecipeCategory> categories;
-		private Map<EmiRecipeCategory, List<EmiIngredient>> workstations;
-		private List<EmiRecipe> recipes;
+		private final List<EmiRecipeCategory> categories;
+		private final Map<EmiRecipeCategory, List<EmiIngredient>> workstations;
+		private final List<EmiRecipe> recipes;
 
 		public Worker(List<EmiRecipeCategory> categories, Map<EmiRecipeCategory, List<EmiIngredient>> workstations, List<EmiRecipe> recipes) {
-			this.categories = categories;
+			// Snapshot: EmiRecipes.categories is cleared in place by the next reload's EmiRecipes.clear(),
+			// which can run while this worker is still building its Manager off-thread.
+			this.categories = List.copyOf(categories);
 			this.workstations = workstations;
 			this.recipes = recipes;
 		}
@@ -306,12 +322,15 @@ public class EmiRecipes {
 		public void run() {
 			long startTime = System.currentTimeMillis();
 			Manager manager = new Manager(categories, workstations, recipes, true);
-			if (activeWorker == this) {
-				long endTime = System.currentTimeMillis();
-				EmiLog.info("Baked recipes after reload in " + (endTime - startTime) + "ms");
-				EmiRecipes.manager = manager;
+			// Release in the same monitor as setWorker: only the newest worker may clear activeWorker.
+			synchronized (EmiRecipes.class) {
+				if (activeWorker == this) {
+					activeWorker = null;
+					long endTime = System.currentTimeMillis();
+					EmiLog.info("Baked recipes after reload in " + (endTime - startTime) + "ms");
+					EmiRecipes.manager = manager;
+				}
 			}
-			setWorker(null);
 		}
 	}
 }
