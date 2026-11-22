@@ -26,6 +26,9 @@ public class EmiShapedRecipe extends EmiCraftingRecipe {
 	public static void setRemainders(List<EmiIngredient> input, CraftingRecipe recipe) {
 		try {
 			CraftingInventory inv = EmiUtil.getCraftingInventory();
+			// Vanilla recipes return a full 3x3 list indexed by slot, custom ones may return a shorter,
+			// compactly indexed list (eg. width * height). 3 keeps padded indices for shapeless recipes.
+			int recipeWidth = recipe instanceof ShapedRecipe shaped ? shaped.getWidth() : 3;
 			for (int i = 0; i < input.size(); i++) {
 				if (input.get(i).isEmpty()) {
 					continue;
@@ -41,9 +44,13 @@ public class EmiShapedRecipe extends EmiCraftingRecipe {
 				List<EmiStack> stacks = input.get(i).getEmiStacks();
 				for (EmiStack stack : stacks) {
 					inv.setStack(i, stack.getItemStack().copy());
-					ItemStack remainder = recipe.getRemainder(inv).get(i);
-					if (!remainder.isEmpty()) {
-						stack.setRemainder(EmiStack.of(remainder));
+					List<ItemStack> remainders = recipe.getRemainder(inv);
+					int index = remainders.size() >= input.size() ? i : (i / 3) * recipeWidth + (i % 3);
+					if (index < remainders.size()) {
+						ItemStack remainder = remainders.get(index);
+						if (!remainder.isEmpty()) {
+							stack.setRemainder(EmiStack.of(remainder));
+						}
 					}
 				}
 				inv.clear();
