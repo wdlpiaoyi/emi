@@ -377,7 +377,7 @@ public class JemiPlugin implements IModPlugin, EmiPlugin {
 			for (Item item : EmiPort.getItemRegistry()) {
 				if (hasSubtype.test(VanillaTypes.ITEM_STACK, item.getDefaultStack())) {
 					registry.setDefaultComparison(item, Comparison.compareData(stack -> {
-						return subtypeManager.getSubtypeInfo(stack.getItemStack(), UidContext.Recipe);
+						return subtypeManager.getSubtypeData(stack.getItemStack(), UidContext.Recipe);
 					}));
 				}
 			}
@@ -387,7 +387,7 @@ public class JemiPlugin implements IModPlugin, EmiPlugin {
 					registry.setDefaultComparison(fluid, Comparison.compareData(stack -> {
 						ITypedIngredient<?> typed = JemiUtil.getTyped(stack).orElse(null);
 						if (typed != null) {
-							return subtypeManager.getSubtypeInfo(type, typed.getIngredient(), UidContext.Recipe);
+							return subtypeManager.getSubtypeData(type, typed.getIngredient(), UidContext.Recipe);
 						}
 						return null;
 					}));
@@ -404,7 +404,7 @@ public class JemiPlugin implements IModPlugin, EmiPlugin {
 							if (hasSubtype.test(iitws, o)) {
 								registry.setDefaultComparison(iitws.getBase(o), Comparison.compareData(stack -> {
 									if (stack instanceof JemiStack jemi) {
-										return subtypeManager.getSubtypeInfo(iitws, jemi.ingredient, UidContext.Recipe);
+										return subtypeManager.getSubtypeData(iitws, jemi.ingredient, UidContext.Recipe);
 									}
 									return null;
 								}));
