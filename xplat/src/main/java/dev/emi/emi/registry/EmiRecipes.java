@@ -71,6 +71,14 @@ public class EmiRecipes {
 		long start = System.currentTimeMillis();
 		recipes.addAll(EmiData.recipes.stream().map(r -> r.get()).toList());
 		categories.sort((a, b) -> EmiRecipeCategoryProperties.getOrder(a) - EmiRecipeCategoryProperties.getOrder(b));
+		invalidators.add(r -> {
+			EmiRecipeCategory category = r.getCategory();
+			if (category == null) {
+				EmiReloadLog.warn("Recipe " + r.getId() + " from " + r.getClass().getName() + " has null category");
+				return true;
+			}
+			return false;
+		});
 		invalidators.addAll(EmiData.recipeFilters);
 
 		invalidators.add(r -> {
