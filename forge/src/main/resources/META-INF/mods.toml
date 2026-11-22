@@ -16,6 +16,6 @@ logoFile = "icon.png"
 [[dependencies.emi]]
 modId = "jei"
 mandatory = false
-versionRange = "[15.20.0.0,)"
+versionRange = "[15.75.0.0,)"
 ordering = "BEFORE"
 side = "CLIENT"
