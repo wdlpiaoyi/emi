@@ -75,13 +75,20 @@ public class EmiRecipeFiller {
 		if (screen != null) {
 			T screenHandler = screen.getScreenHandler();
 			ScreenHandlerType<?> type;
-			try {
-				type = screenHandler instanceof PlayerScreenHandler ? null : screenHandler.getType();
-			} catch (UnsupportedOperationException e) {
+			if (screenHandler.getClass() == PlayerScreenHandler.class) {
 				type = null;
+			} else {
+				try {
+					type = screenHandler.getType();
+				} catch (UnsupportedOperationException e) {
+					type = null;
+				}
 			}
-			if ((type != null || screenHandler instanceof PlayerScreenHandler) && handlers.containsKey(type)) {
+			if (type != null && handlers.containsKey(type)) {
 				return (List<EmiRecipeHandler<T>>) (List<?>) handlers.get(type);
+			}
+			if (screenHandler instanceof PlayerScreenHandler && handlers.containsKey(null)) {
+				return (List<EmiRecipeHandler<T>>) (List<?>) handlers.get(null);
 			}
 			for (Slot slot : screen.getScreenHandler().slots) {
 				if (slot instanceof CraftingResultSlot crs) {
