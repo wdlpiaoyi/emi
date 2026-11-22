@@ -206,7 +206,8 @@ public class EmiSearchWidget extends TextFieldWidget {
 				return true;
 			}
 			if ((EmiConfig.focusSearch.matchesKey(keyCode, scanCode)
-					|| keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
+					|| keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER
+					|| keyCode == GLFW.GLFW_KEY_ESCAPE)) {
 				this.setFocused(false);
 				this.setFocused(false);
 				return true;
