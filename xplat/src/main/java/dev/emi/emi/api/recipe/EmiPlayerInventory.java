@@ -23,6 +23,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.registry.EmiRecipeFiller;
 import dev.emi.emi.registry.EmiStackList;
 import dev.emi.emi.runtime.EmiFavorite;
+import dev.emi.emi.runtime.EmiHidden;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -120,6 +121,13 @@ public class EmiPlayerInventory {
 		return null;
 	}
 
+	private static boolean isIndexVisible(EmiIngredient ingredient) {
+		if (ingredient.isEmpty() || EmiHidden.isDisabled(ingredient) || EmiHidden.isHidden(ingredient)) {
+			return false;
+		}
+		return EmiStackList.getIndex(ingredient) != Integer.MAX_VALUE;
+	}
+
 	public List<EmiIngredient> getCraftables() {
 		Predicate<EmiRecipe> predicate = getPredicate();
 		if (predicate == null) {
@@ -129,7 +137,8 @@ public class EmiPlayerInventory {
 		for (EmiStack stack : inventory.keySet()) {
 			set.addAll(EmiApi.getRecipeManager().getRecipesByInput(stack));
 		}
-		return set.stream().filter(r -> !r.hideCraftable() && predicate.test(r) && r.getOutputs().size() > 0)
+		return set.stream().filter(r -> !r.hideCraftable() && predicate.test(r) && r.getOutputs().size() > 0
+			&& isIndexVisible(r.getOutputs().get(0)))
 			.map(r -> new EmiFavorite.Craftable(r))
 			.sorted((a, b) -> {
 				int i = Integer.compare(
