@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public class NameQuery extends Query {
 	private final Set<EmiStack> valid = Sets.newIdentityHashSet();
@@ -23,7 +24,11 @@ public class NameQuery extends Query {
 
 	@Override
 	public boolean matchesUnbaked(EmiStack stack) {
-		return getText(stack).getString().toLowerCase().contains(name);
+		if (getText(stack).getString().toLowerCase().contains(name)) {
+			return true;
+		}
+		Identifier id = stack.getId();
+		return id != null && id.getPath().toLowerCase().contains(name);
 	}
 
 	public static Text getText(EmiStack stack) {
