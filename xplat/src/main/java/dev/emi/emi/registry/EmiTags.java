@@ -24,6 +24,8 @@ import dev.emi.emi.runtime.EmiTagKey;
 import dev.emi.emi.util.InheritanceMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
@@ -34,6 +36,7 @@ public class EmiTags {
 	public static final InheritanceMap<EmiRegistryAdapter<?>> ADAPTERS_BY_CLASS = new InheritanceMap<>(Maps.newHashMap());
 	public static final Map<Registry<?>, EmiRegistryAdapter<?>> ADAPTERS_BY_REGISTRY = Maps.newHashMap();
 	public static final Identifier HIDDEN_FROM_RECIPE_VIEWERS = EmiPort.id("c", "hidden_from_recipe_viewers");
+	public static final Identifier DISABLED_FROM_RECIPE_VIEWERS = EmiPort.id("c", "disabled_from_recipe_viewers");
 	public static final Map<TagKey<?>, Identifier> MODELED_TAGS = Maps.newHashMap();
 	private static final Map<Set<?>, List<EmiTagKey<?>>> CACHED_TAGS = Maps.newHashMap();
 	private static final Map<EmiTagKey<?>, List<?>> TAG_VALUES = Maps.newHashMap();
@@ -175,17 +178,33 @@ public class EmiTags {
 		SORTED_TAGS.clear();
 		TAG_VALUES.clear();
 		CACHED_TAGS.clear();
+		reloadDisabledTag();
 		for (Registry<?> registry : ADAPTERS_BY_REGISTRY.keySet()) {
 			reloadTags(registry);
+		}
+	}
+
+	private static void reloadDisabledTag() {
+		Set<Block> disabledBlocks = EmiTagKey.of(EmiPort.getBlockRegistry(), DISABLED_FROM_RECIPE_VIEWERS).getSet();
+		if (disabledBlocks.isEmpty()) {
+			return;
+		}
+		EmiHidden.tagDisabledKeys.addAll(disabledBlocks);
+		for (Item item : EmiPort.getItemRegistry()) {
+			if (item instanceof BlockItem bi && disabledBlocks.contains(bi.getBlock())) {
+				EmiHidden.tagDisabledKeys.add(item);
+			}
 		}
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static <T> void reloadTags(Registry<T> registry) {
 		Set<T> hidden = EmiTagKey.of(registry, HIDDEN_FROM_RECIPE_VIEWERS).getSet();
+		EmiHidden.tagDisabledKeys.addAll(EmiTagKey.of(registry, DISABLED_FROM_RECIPE_VIEWERS).getSet());
 		Identifier rid = registry.getKey().getValue();
 		List<EmiTagKey<T>> tags = EmiTagKey.fromRegistry(registry)
-			.filter(key -> !exclusions.contains(rid, key.id()) && !hidden.containsAll(key.getList()))
+			.filter(key -> !exclusions.contains(rid, key.id()) && !hidden.containsAll(key.getList())
+				&& !key.getList().stream().allMatch(EmiHidden.tagDisabledKeys::contains))
 			.toList();
 		logUntranslatedTags(tags);
 		tags = consolodateTags(tags);

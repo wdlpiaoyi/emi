@@ -29,6 +29,8 @@ public class EmiHidden {
 	// Plugin defined
 	public static Set<EmiIngredient> pluginDisabledStacks = Sets.newHashSet();
 	public static List<Predicate<EmiStack>> pluginDisabledFilters = Lists.newArrayList();
+	// Tag defined
+	public static Set<Object> tagDisabledKeys = Sets.newHashSet();
 	// User edited
 	public static Set<EmiIngredient> hiddenStacks = new LinkedHashSet<>();
 
@@ -38,6 +40,7 @@ public class EmiHidden {
 		disabledFilterLookup.clear();
 		pluginDisabledStacks.clear();
 		pluginDisabledFilters.clear();
+		tagDisabledKeys.clear();
 	}
 
 	public static void reload() {
@@ -83,7 +86,7 @@ public class EmiHidden {
 	public static boolean isDisabled(EmiIngredient stack) {
 		outer:
 		for (EmiStack s : stack.getEmiStacks()) {
-			if (disabledStacks.contains(s) || pluginDisabledStacks.contains(s)) {
+			if (disabledStacks.contains(s) || pluginDisabledStacks.contains(s) || tagDisabledKeys.contains(s.getKey())) {
 				continue;
 			}
 			for (Predicate<EmiStack> predicate : pluginDisabledFilters) {
