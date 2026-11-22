@@ -98,7 +98,7 @@ public class EmiSearch {
 		for (Supplier<EmiAlias> supplier : EmiData.aliases) {
 			EmiAlias alias = supplier.get();
 			for (String key : alias.keys()) {
-				if (!I18n.hasTranslation(key)) {
+				if (EmiConfig.devMode && !I18n.hasTranslation(key)) {
 					EmiReloadLog.warn("Untranslated alias " + key);
 				}
 				String text = I18n.translate(key).toLowerCase();
